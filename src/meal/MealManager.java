@@ -1,7 +1,6 @@
 package meal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MealManager {
 
@@ -26,7 +25,18 @@ public class MealManager {
         }
     }
 
+    public void showAllMeals() {
+        System.out.println("\033[1;32m--- All Available Meals ---\033[0m");
+        for (Meal meal : mealList) {
+            System.out.println(meal.getName() + " - Calories: " + meal.getCalories() + ", Protein: " + meal.getProtein() + "g, Carbs: " + meal.getCarbs() + "g, Fats: " + meal.getFats() + "g");
+        }
+    }
+
     public List<Meal> getMealList() {
         return mealList;
+    }
+
+    public void clearMeals() {
+        mealList.clear();
     }
 }

@@ -1,10 +1,11 @@
-import auth.AuthManager;
 import meal.Meal;
+import meal.MealDataStorage;
 import meal.MealManager;
 import grocery.GroceryManager;
 import report.ReportManager;
 import statistics.StatsManager;
 import file.FileManager;
+import auth.AuthManager;
 import java.util.Scanner;
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class Main {
         GroceryManager groceryManager = new GroceryManager();
         ReportManager reportManager = new ReportManager();
         StatsManager statsManager = new StatsManager();
+
+        // Load predefined meals or set a goal-based meal plan
+        List<Meal> meals = MealDataStorage.loadMeals();
+        for (Meal meal : meals) {
+            mealManager.addMeal(meal);
+        }
 
         // User authentication
         System.out.println("Please choose an option:");
@@ -46,10 +53,11 @@ public class Main {
             System.out.println("\n\033[1;33m--- Main Menu ---\033[0m");
             System.out.println("1. View Meal Plan");
             System.out.println("2. Manage Meals (Add/Remove)");
-            System.out.println("3. View and Generate Grocery List");
-            System.out.println("4. Generate Weekly Progress Report");
-            System.out.println("5. Track Meal Plan Adherence");
-            System.out.println("6. Exit");
+            System.out.println("3. View All Available Meals");
+            System.out.println("4. View and Generate Grocery List");
+            System.out.println("5. Generate Weekly Progress Report");
+            System.out.println("6. Track Meal Plan Adherence");
+            System.out.println("7. Exit");
 
             System.out.print("Choose an option: ");
             int option = sc.nextInt();
@@ -65,18 +73,22 @@ public class Main {
                     break;
 
                 case 3:
-                    generateGroceryList(mealManager, groceryManager, sc);
+                    mealManager.showAllMeals();
                     break;
 
                 case 4:
-                    generateProgressReport(reportManager, sc);
+                    generateGroceryList(mealManager, groceryManager, sc);
                     break;
 
                 case 5:
-                    trackMealPlanAdherence(statsManager, sc);
+                    generateProgressReport(reportManager, sc);
                     break;
 
                 case 6:
+                    trackMealPlanAdherence(statsManager, sc);
+                    break;
+
+                case 7:
                     System.out.println("\033[1;31mExiting program. Goodbye!\033[0m");
                     System.exit(0);
                     break;

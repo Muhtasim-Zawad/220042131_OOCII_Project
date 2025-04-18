@@ -1,7 +1,10 @@
 package auth;
 
+import meal.Meal;
+import meal.MealManager;
+import meal.MealDataStorage;
+import java.util.List;
 import java.util.Scanner;
-import java.io.*;
 
 public class AuthManager {
 
@@ -25,14 +28,43 @@ public class AuthManager {
         User newUser = new User(name, currentCalories, targetCalories, goal);
 
         // Store user info in CSV
-        try {
-            FileWriter writer = new FileWriter("resources/users.csv", true);
-            writer.write(newUser.toCSV());
-            writer.close();
-            System.out.println("\033[1;32mRegistration successful! You can now log in.\033[0m");
-        } catch (IOException e) {
-            System.out.println("Error saving user data.");
+        UserDataStorage.saveUserData(newUser);
+
+        // Load predefined meals or set a goal-based meal plan
+        MealManager mealManager = new MealManager();
+        setMealPlanForUser(mealManager, goal);
+
+        // Display confirmation
+        System.out.println("\033[1;32mRegistration successful! You can now log in.\033[0m");
+    }
+
+    // Assign a default meal plan based on the user's goal
+    private void setMealPlanForUser(MealManager mealManager, String goal) {
+        List<Meal> predefinedMeals = MealDataStorage.loadMeals();
+
+        // Clear existing meals to set the new meal plan
+        mealManager.clearMeals();
+
+        if ("Weight Loss".equalsIgnoreCase(goal)) {
+            // Assign weight loss meal plan
+            for (Meal meal : predefinedMeals) {
+                if (meal.getCalories() <= 400) {
+                    mealManager.addMeal(meal);
+                }
+            }
+        } else if ("Weight Gain".equalsIgnoreCase(goal)) {
+            // Assign weight gain meal plan
+            for (Meal meal : predefinedMeals) {
+                if (meal.getCalories() > 400) {
+                    mealManager.addMeal(meal);
+                }
+            }
+        } else {
+            // Default meal plan if no goal matches
+            mealManager.addMeal(predefinedMeals.get(0)); // Just add one default meal if goal is unclear
         }
+
+        System.out.println("\033[1;32mMeal plan has been set for your goal: " + goal + "\033[0m");
     }
 
     public void loginUser(Scanner sc) {
@@ -43,26 +75,23 @@ public class AuthManager {
 
         // Find user from CSV
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("resources/users.csv"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] userData = line.split(",");
-                if (userData[0].equals(name)) {
+            List<User> users = UserDataStorage.loadUserData();
+            for (User user : users) {
+                if (user.getName().equals(name)) {
                     System.out.println("Welcome back, " + name);
-                    showUserDetails(userData);
+                    showUserDetails(user);
                     break;
                 }
             }
-            reader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error reading user data.");
         }
     }
 
-    private void showUserDetails(String[] userData) {
-        System.out.println("\nCurrent Calorie Intake: " + userData[1]);
-        System.out.println("Target Calorie Intake: " + userData[2]);
-        System.out.println("Goal: " + userData[3]);
+    private void showUserDetails(User user) {
+        System.out.println("\nCurrent Calorie Intake: " + user.getCurrentCalories());
+        System.out.println("Target Calorie Intake: " + user.getTargetCalories());
+        System.out.println("Goal: " + user.getGoal());
         // Further functionality can be added here, like modifying goals
     }
 }
