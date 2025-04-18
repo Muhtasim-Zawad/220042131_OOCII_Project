@@ -15,7 +15,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("\033[1;34m\n===========================================");
-        System.out.println("        Welcome to HealthFit Planner!      ");
+        System.out.println("        Welcome to HealthFit!      ");
         System.out.println("===========================================");
         System.out.println("\033[0m");
 
@@ -24,12 +24,6 @@ public class Main {
         GroceryManager groceryManager = new GroceryManager();
         ReportManager reportManager = new ReportManager();
         StatsManager statsManager = new StatsManager();
-
-        // Load predefined meals or set a goal-based meal plan
-        List<Meal> meals = MealDataStorage.loadMeals();
-        for (Meal meal : meals) {
-            mealManager.addMeal(meal);
-        }
 
         // User authentication
         System.out.println("Please choose an option:");
@@ -124,10 +118,12 @@ public class Main {
             int carbs = sc.nextInt();
             System.out.print("Enter fats: ");
             int fats = sc.nextInt();
+            System.out.print("Enter meal type: ");
+            String mealType = sc.nextLine();
             sc.nextLine();  // Consume the newline
 
-            Meal meal = new Meal(name, calories, protein, carbs, fats);
-            mealManager.addMeal(meal);
+            Meal meal = new Meal(name, calories, protein, carbs, fats, mealType);
+            mealManager.addMeal(meal, mealType);
             System.out.println("\033[1;32mMeal added successfully!\033[0m");
 
         } else if (manageOption == 2) {
