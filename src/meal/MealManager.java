@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MealManager {
-    private List<Meal> mealList = new ArrayList<>();
+
+    private List<Meal> mealList;
+
+    public MealManager() {
+        mealList = new ArrayList<>();
+    }
 
     public void addMeal(Meal meal) {
         mealList.add(meal);
@@ -19,5 +24,9 @@ public class MealManager {
         for (Meal meal : mealList) {
             System.out.println(meal.getName() + " - Calories: " + meal.getCalories() + ", Protein: " + meal.getProtein() + "g, Carbs: " + meal.getCarbs() + "g, Fats: " + meal.getFats() + "g");
         }
+    }
+
+    public List<Meal> getMealList() {
+        return mealList;
     }
 }
