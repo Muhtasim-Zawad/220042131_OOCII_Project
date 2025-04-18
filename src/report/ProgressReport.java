@@ -14,4 +14,12 @@ public class ProgressReport {
         System.out.println("Total Calories Consumed: " + totalCaloriesConsumed);
         System.out.println("Total Grocery Expense: $" + totalGroceryExpense);
     }
+
+    public int getTotalCaloriesConsumed() {
+        return totalCaloriesConsumed;
+    }
+
+    public double getTotalGroceryExpense() {
+        return totalGroceryExpense;
+    }
 }
